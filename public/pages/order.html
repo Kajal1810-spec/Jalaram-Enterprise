@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Order Details</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="brand">
+      <img src="/assets/logo.svg" class="logo" />
+      <h1>Order Details</h1>
+    </div>
+    <a href="/pages/admin.html" class="btn">Back</a>
+  </div>
+</header>
+
+<main class="container main">
+  <div id="content" class="card">Loading...</div>
+</main>
+
+<script>
+const qs = new URLSearchParams(location.search);
+const id = qs.get("id");
+
+async function load() {
+  const key = sessionStorage.getItem('adminKey');
+  const res = await fetch('/api/orders', {
+    headers: { "x-admin-key": key }
+  });
+
+  const list = await res.json();
+  const o = list.find(x => x.id == id);
+
+  document.getElementById("content").innerHTML = `
+    <h2>Order #${o.id}</h2>
+    <p><b>Status:</b> ${o.status}</p>
+    <p><b>Buyer:</b> ${o.buyer}</p>
+    <p><b>Total:</b> ₹${o.total}</p>
+    <p><b>Date:</b> ${o.created_at}</p>
+    <h3>Items</h3>
+    ${o.items.map(i =>
+      `<div>${i.title} × ${i.qty} — ₹${i.price * i.qty}</div>`
+    ).join("")}
+  `;
+}
+
+load();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,11 @@
+<!doctype html><html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Register</title><link rel="stylesheet" href="/css/style.css"></head><body>
+<header class="site-header"><div class="container header-inner"><div class="brand"><img src="/assets/logo.svg" class="logo"/><div><h1>Jalaram</h1></div></div></div></header>
+<main class="container main"><div class="card"><h3>Register</h3><label>Name<input id="name"></label><label>Email<input id="email"></label><label>Password<input id="password" type="password"></label><button id="register" class="btn primary">Register</button></div></main>
+<script>
+document.getElementById('register').onclick = async ()=>{
+  const name=document.getElementById('name').value,email=document.getElementById('email').value,password=document.getElementById('password').value;
+  const res=await fetch('/api/auth/register',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({name,email,password})});
+  const j=await res.json();
+  if(j.token){ localStorage.setItem('je_token', j.token); alert('Registered and logged in'); location.href='/'; } else alert('Register failed: '+(j.error||'Unknown'));
+};
+</script></body></html>

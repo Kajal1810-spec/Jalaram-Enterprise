@@ -1,0 +1,16 @@
+<!doctype html><html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>My Orders</title><link rel="stylesheet" href="/css/style.css"></head><body>
+<header class="site-header"><div class="container header-inner"><div class="brand"><img src="/assets/logo.svg" class="logo"/><div><h1>Jalaram</h1></div></div><div class="controls"><a href="/" class="btn">Home</a></div></div></header>
+<main class="container main"><h2>My Orders</h2><div id="orders"></div></main>
+<script>
+async function loadOrders(){
+  const token = localStorage.getItem('je_token');
+  if(!token){ document.getElementById('orders').innerText = 'Please login to view orders.'; return; }
+  const res = await fetch('/api/user/orders', { headers: { 'authorization': 'Bearer '+token }});
+  if(!res.ok){ document.getElementById('orders').innerText = 'Failed to load orders.'; return; }
+  const data = await res.json();
+  if(!data.length) { document.getElementById('orders').innerText = 'No orders yet.'; return; }
+  document.getElementById('orders').innerHTML = data.map(o=>`<div class="card"><strong>Order ${o.id}</strong><div class="small">Total: ₹${o.total} • ${o.created_at}</div><div>Items: ${o.items.map(i=>i.title+' x'+i.qty).join(', ')}</div></div>`).join('');
+}
+loadOrders();
+</script>
+</body></html>
